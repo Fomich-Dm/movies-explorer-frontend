@@ -22,7 +22,7 @@ function MoviesCard({ img }) {
           type="button" onClick={likeClick}
         ></button>
       </div>
-      <img className="card__img" alt="#" src={img} />
+      <img className="card__img" alt="Обложка фильма" src={img} />
     </section>
   );
 }

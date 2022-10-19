@@ -11,6 +11,10 @@
     padding: 29px 0;
 }
 
+.authentication__login-link:hover {
+    opacity: 0.7;
+}
+
 .authentication__register-link {
     display: flex;
     justify-content: center;
@@ -27,6 +31,10 @@
     font-size: 12px;
     line-height: 16px;
     text-decoration: none;
+}
+
+.authentication__register-link:hover {
+    opacity: 0.7;
 }
 
 @media (max-width:520px) {

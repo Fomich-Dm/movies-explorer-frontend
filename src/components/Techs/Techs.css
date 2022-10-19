@@ -1,5 +1,5 @@
 .techs {
-    padding: 81px 70px;
+    padding: 90px 70px;
     background: #F5F5F5;
 
 }
@@ -86,6 +86,7 @@
 @media (max-width:520px){
     .techs {
         padding: 66px 18px;
+        background-color: #fafafa;
     }
 
     .techs__title {

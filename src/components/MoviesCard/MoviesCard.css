@@ -31,7 +31,11 @@
     width: 30px;
     height: 30px;
     padding: 0;
+}
+
+.card__button:hover {
     cursor: pointer;
+    border: 1px solid black;
 }
 
 .card__button_save {

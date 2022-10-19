@@ -40,6 +40,7 @@
   font-size: 18px;
   line-height: 20px;
   color: #A0A0A0;
+  cursor: pointer;
 }
 
 .search-form__button {
@@ -49,6 +50,10 @@
   border: none;
   padding: 0;
   background: url("../../images/icon__button.svg") no-repeat center #3456F3;
+}
+
+.search-form__button:hover {
+  opacity: 0.7;
   cursor: pointer;
 }
 
@@ -64,6 +69,10 @@
   background-color: #ebebeb;
   border-radius: 20px;
   padding-left: 2px;
+}
+
+.search__checkbox:hover {
+  opacity: 0.5;
   cursor: pointer;
 }
 
@@ -141,6 +150,7 @@
   .search__label {
     position: absolute;
     top: 272px;
+    z-index: 1;
   }
 
   .search__checkbox-text {

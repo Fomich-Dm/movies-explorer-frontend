@@ -52,6 +52,10 @@
     background-color: #fafafa;
     border: none;
     margin-bottom: 16px;
+}
+
+.profile__button-edit:hover {
+    opacity: 0.7;
     cursor: pointer;
 }
 
@@ -62,6 +66,11 @@
     color: #EE3465;
     background-color: #fafafa;
     border: none;
+    cursor: pointer;
+}
+
+.profile__button-exit:hover {
+    opacity: 0.7;
     cursor: pointer;
 }
 

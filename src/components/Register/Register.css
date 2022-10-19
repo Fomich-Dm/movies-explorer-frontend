@@ -43,7 +43,11 @@
     line-height: 17px;
     text-align: center;
     color: #FFFFFF;
+}
+
+.register__button:hover {
     cursor: pointer;
+    opacity: 0.7;
 }
 
 .register__singin {
@@ -68,6 +72,11 @@
     color: #3456F3;
     text-decoration: none;
     margin-left: 6px;
+}
+
+.register__link:hover {
+    cursor: pointer;
+    opacity: 0.7;
 }
 
 @media (max-width:768px) {

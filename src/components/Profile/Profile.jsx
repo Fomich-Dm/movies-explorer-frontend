@@ -3,7 +3,7 @@ import "./Profile.css";
 
 function Profile () {
     return(
-        <section className="profile">
+        <main className="profile">
             <h2 className="profile__title">Привет, Виталий!</h2>
             <div className="profile__content">
                 <div className="profile__info">
@@ -17,7 +17,7 @@ function Profile () {
             </div>
             <button className="profile__button-edit">Редактировать</button>
             <button className="profile__button-exit">Выйти из аккаунта</button>
-        </section>
+        </main>
     )
 }
 
