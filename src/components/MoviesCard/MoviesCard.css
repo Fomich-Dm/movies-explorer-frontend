@@ -1,0 +1,56 @@
+.card {
+    background: #FFFFFF;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.08);
+}
+
+.card__info {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 14px 14px;
+}
+
+.card__name {
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+    margin: 0;
+    margin-bottom: 9px;
+}
+
+.card__time {
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 13px;
+    color: #A0A0A0;
+    margin: 0;
+}
+
+.card__button {
+    border-radius: 36px;
+    border: none;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+}
+
+.card__button:hover {
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+.card__button_save {
+    background: url("../../images/save-card-icon.svg") no-repeat center #f4f4f4;
+}
+
+.card__button_save-active {
+    background: url("../../images/save-active-card-icon.svg") no-repeat center #3456F3;
+}
+
+.card__button_delete {
+    background: url("../../images/delete-card-icon.svg") no-repeat center;
+}
+
+.card__img {
+    width: 100%;
+    object-fit: cover;
+}
