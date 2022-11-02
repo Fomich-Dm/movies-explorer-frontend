@@ -43,6 +43,7 @@
     font-size: 11px;
     line-height: 13px;
     margin: 0;
+    text-align: right;
 }
 
 .profile__button-edit {

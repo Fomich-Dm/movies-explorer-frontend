@@ -2,11 +2,11 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Navigation.css";
 
-function Navigation({children}) {
+function Navigation({children , active}) {
   const { pathname } = useLocation();
 
   return (
-    <section className="navigation">
+    <section className={`navigation ${active ? "" : "navigation__none"}`}>
       <div className="navigation__links">
         <>
         {children}

@@ -6,10 +6,7 @@ import Navigation from "../Navigation/Navigation";
 import Account from "../Account/Account";
 import React from "react";
 
-function Header({ themeColor }) {
-  const location = useLocation();
-  const windowInnerWidth = window.innerWidth;
-
+function Header({ themeColor, loggedIn }) {
   const [menuActive, setMenuActive] = React.useState(false);
 
   const openMenu = (e) => {
@@ -22,9 +19,7 @@ function Header({ themeColor }) {
         <img className="header__logo" alt="Movies" src={logo} />
       </Link>
       <>
-        {location.pathname === "/" ? (
-          <Authentication />
-        ) : windowInnerWidth <= 768 ? (
+        { loggedIn ? (
           <>
             <nav className="burger">
               <div className="burger__btn" onClick={openMenu}>
@@ -43,18 +38,19 @@ function Header({ themeColor }) {
                 <div>
                   <button className="menu__btn-close" onClick={openMenu} />
                 </div>
-                <Navigation>
-                  <Link to={"/"} className="navigation__link">Главная</Link>
+                <Navigation active={true}>
+                  <Link to={"/"} className="navigation__link">
+                    Главная
+                  </Link>
                 </Navigation>
-                <Account />
+                <Account active={true} />
               </div>
             </div>
+            <Navigation active={false} />
+            <Account active={false} />
           </>
         ) : (
-          <>
-            <Navigation />
-            <Account />
-          </>
+          <Authentication />
         )}
       </>
     </header>
