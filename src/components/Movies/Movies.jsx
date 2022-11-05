@@ -6,7 +6,7 @@ import MoviesCardList from "../MoviesCardList/MoviesCardList";
 function Movies({movies ,addMovies}) {
   return (
     <main>
-      <SearchForm />
+      <SearchForm movies={movies} />
       <MoviesCardList movies={movies} addMovies={addMovies} />
     </main>
   );

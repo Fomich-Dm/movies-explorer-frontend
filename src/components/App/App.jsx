@@ -20,7 +20,6 @@ import { useLocation } from "react-router-dom";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
-  // const [userData, setUserData] = useState({ name: "", email: "" });
   const [movies, setMovies] = useState([]);
   const [saveMovies, setSaveMovies] = useState([])
   const [editInfo, setEditInfo] = useState(false);
@@ -30,20 +29,25 @@ function App() {
   useEffect(() => {
     mainApi.getUserInfo().then((user) => {
       setCurrentUser(user.data);
+    }).catch((err) => {
+      console.log(err);
     });
-    moviesApi
+    /*moviesApi
       .getAllMovies()
       .then((movies) => {
         setMovies(movies);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      })*/
   }, []);
 
   useEffect(() => {
       tokenCheck();
   }, [loggedIn]);
+
+  const AllMovies = () => {
+    moviesApi().then((movies) => {
+      localStorage.setItem("allMovies", JSON.stringify(movies))
+    })
+  }
 
   const handleRegister = (name, email, password) => {
     register(name, email, password)
@@ -90,10 +94,26 @@ function App() {
       });
   };
 
+  const filter = (data) => {
+    const fil = {
+      country: data.country,
+      director: data.director,
+      duration: data.duration,
+      year: data.year,
+      description: data.description,
+      image: `https://api.nomoreparties.co/${data.image.url}`,
+      trailerLink: data.trailerLink,
+      thumbnail: `https://api.nomoreparties.co/${data.image.url}`,
+      movieId: data.id,
+      nameRU: data.nameRU,
+      nameEN: data.nameEN,
+    }
+    return fil;
+  }
+
   const addMovies = (data) => {
-    console.log()
-    mainApi.saveMoviesq(data).then((newMovie) => {
-      console.log(newMovie)
+    const a = filter(data)
+    mainApi.saveMovies(a).then((newMovie) => {
       setSaveMovies([newMovie, ...saveMovies])
     }).catch((err) => {
       console.log(err);
@@ -102,6 +122,7 @@ function App() {
 
   const tokenCheck = () => {
     const token = localStorage.getItem("token");
+    console.log()
     if (token) {
       getContent(token)
         .then((res) => {
@@ -150,7 +171,7 @@ function App() {
               element={
                 <>
                   <Header themeColor="header__white" loggedIn={loggedIn} />
-                  <SavedMovies />
+                  <SavedMovies saveMovies={saveMovies} />
                   <Footer />
                 </>
               }

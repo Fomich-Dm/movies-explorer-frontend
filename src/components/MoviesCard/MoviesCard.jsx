@@ -18,8 +18,8 @@ function MoviesCard({ movie, addMovies }) {
     <section className="card">
       <div className="card__info">
         <div className="card__title">
-          <h2 className="card__name">{movie.nameRU}</h2>
-          <p className="card__time">{movie.duration}</p>
+          <h2 className="card__name">{pathname === "/saved-movies" ? movie.data.nameRU : movie.nameRU}</h2>
+          <p className="card__time">{pathname === "/saved-movies" ? movie.data.duration : movie.duration}</p>
         </div>
         <button
           className={`${
@@ -34,7 +34,7 @@ function MoviesCard({ movie, addMovies }) {
       <img
         className="card__img"
         alt="Обложка фильма"
-        src={`https://api.nomoreparties.co/${movie.image.url}`}
+        src={pathname === "/saved-movies" ? movie.data.image :`https://api.nomoreparties.co/${movie.image.url}`}
       />
     </section>
   );

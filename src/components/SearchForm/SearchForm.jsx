@@ -2,12 +2,18 @@ import React from "react";
 import "./SearchForm.css";
 import searchIcon from "../../images/search-icon.svg";
 
-function SearchForm() {
+function SearchForm({movies}) {
   const [checkbox, setCheckbox] = React.useState(false);
+
+  const [value, setValue] = React.useState('')
 
   const toggleClick = () => {
     setCheckbox(!checkbox);
   }
+
+  const filterCounters = movies.filter(movie => {
+    return movie.name.toLowerCase().includes(value.toLowerCase())
+  })
   
   return (
     <section className="search">
@@ -18,6 +24,7 @@ function SearchForm() {
             className="search-form__input"
             type="text"
             placeholder="Фильм" required
+            onChange={(event) => setValue(event.target.value)}
           ></input>
           <button className="search-form__button"></button>
         </form>

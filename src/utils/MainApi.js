@@ -30,18 +30,19 @@ class MainApi {
     }).then(this._checkResponse);
   }
 
-  saveMoviesq(data) {
+  saveMovies(data) {
     return fetch(`${this._url}/movies`, {
       method: "POST",
       headers: this._headers,
-      body: JSON.stringify(console.log(data), data),
+      body: JSON.stringify(data),
     }).then(this._checkResponse);
   }
 
 }
 
 const mainApi = new MainApi({
-  url: "http://api.movies.fomindmitriy.nomoredomains.icu",
+  //url: "http://api.movies.fomindmitriy.nomoredomains.icu",
+  url: "http://localhost:3000",
   headers: {
     authorization: `Bearer ${localStorage.getItem("token")}`,
     "Content-Type": "application/json",
