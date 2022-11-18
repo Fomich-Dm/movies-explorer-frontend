@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Authentication from "../Authentication/Authentication";
 import logo from "../../images/logo.svg";
 import "./Header.css";
@@ -19,7 +19,7 @@ function Header({ themeColor, loggedIn }) {
         <img className="header__logo" alt="Movies" src={logo} />
       </Link>
       <>
-        { loggedIn ? (
+        {loggedIn ? (
           <>
             <nav className="burger">
               <div className="burger__btn" onClick={openMenu}>

@@ -1,20 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SearchForm.css";
 import searchIcon from "../../images/search-icon.svg";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
-function SearchForm({movies}) {
-  const [checkbox, setCheckbox] = React.useState(false);
+function SearchForm({
+  searchAllMovies,
+  searchSaveMovies,
+  checkbox,
+  setCheckbox,
+}) {
+  const [value, setValue] = useState("");
+  const { pathname } = useLocation();
 
-  const [value, setValue] = React.useState('')
+  useEffect(() => {});
 
   const toggleClick = () => {
     setCheckbox(!checkbox);
-  }
+  };
 
-  const filterCounters = movies.filter(movie => {
-    return movie.name.toLowerCase().includes(value.toLowerCase())
-  })
-  
+  const heandleSearchClick = (e) => {
+    e.preventDefault();
+
+    if (pathname === "/movies") {
+      searchAllMovies(value);
+    }
+    if (pathname === "/saved-movies") {
+      searchSaveMovies(value);
+    }
+  };
+
   return (
     <section className="search">
       <div className="search__container">
@@ -23,14 +38,22 @@ function SearchForm({movies}) {
           <input
             className="search-form__input"
             type="text"
-            placeholder="Фильм" required
+            placeholder="Фильм"
+            required
             onChange={(event) => setValue(event.target.value)}
           ></input>
-          <button className="search-form__button"></button>
+          <button
+            className="search-form__button"
+            onClick={heandleSearchClick}
+          ></button>
         </form>
         <label className="search__label" onClick={toggleClick}>
           <div className="search__checkbox">
-            <div className={`search__checkbox-slider ${checkbox ? 'search__checkbox-slider_active' : ''}`}></div>
+            <div
+              className={`search__checkbox-slider ${
+                checkbox ? "search__checkbox-slider_active" : ""
+              }`}
+            ></div>
           </div>
           <span className="search__checkbox-text">Короткометражки</span>
         </label>

@@ -52,6 +52,10 @@
     color: #000000;
 }
 
+.about-me__link:hover {
+    opacity: 0.6;
+}
+
 .about-me__photo {
     max-width: 270px;
     height: 327px;

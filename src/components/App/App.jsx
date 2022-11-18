@@ -20,40 +20,132 @@ import { useLocation } from "react-router-dom";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
+
   const [movies, setMovies] = useState([]);
-  const [saveMovies, setSaveMovies] = useState([])
+  const [saveMovies, setSaveMovies] = useState([]);
+
+  const [allMovies, setAllMovies] = useState(
+    JSON.parse(localStorage.getItem("allMovies")) ?? []
+  );
+  const [allSaveMovies, setAllSaveMovies] = useState(
+    JSON.parse(localStorage.getItem("saveMovies"))
+  );
+
+  const [filterMovies, setFilterMovies] = useState(
+    JSON.parse(localStorage.getItem("filterMovies")) ?? []
+  );
+  const [filterSaveMovies, setFilterSaveMovies] = useState(
+    JSON.parse(localStorage.getItem("filterSaveMovies"))
+  );
+
+  const [preloaderActive, setPreloaderActive] = useState(false);
+  const [checkbox, setCheckbox] = useState(
+    JSON.parse(localStorage.getItem("checkbox"))
+  );
+
   const [editInfo, setEditInfo] = useState(false);
   const navigate = useNavigate();
   const pathname = useLocation();
 
   useEffect(() => {
-    mainApi.getUserInfo().then((user) => {
-      setCurrentUser(user.data);
-    }).catch((err) => {
-      console.log(err);
-    });
-    /*moviesApi
-      .getAllMovies()
-      .then((movies) => {
-        setMovies(movies);
-      })*/
+    if (loggedIn) {
+      mainApi
+        .getUserInfo()
+        .then((user) => {
+          setCurrentUser(user.data);
+          getSaveMovies(user.data._id);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
+
+  useEffect(() => {
+    tokenCheck();
   }, []);
 
   useEffect(() => {
-      tokenCheck();
-  }, [loggedIn]);
+    if (!checkbox) {
+      setMovies(allMovies);
+      setSaveMovies(allSaveMovies);
+      localStorage.setItem("checkbox", false);
+    } else {
+      setMovies(filterMovies);
+      setSaveMovies(filterSaveMovies);
+      localStorage.setItem("checkbox", true);
+    }
+  });
 
-  const AllMovies = () => {
-    moviesApi().then((movies) => {
-      localStorage.setItem("allMovies", JSON.stringify(movies))
-    })
-  }
+  const searchAllMovies = (value) => {
+    setPreloaderActive(true);
+    moviesApi
+      .getAllMovies()
+      .then((movies) => {
+        const moviesList = fitersMovies(movies, value);
+        localStorage.setItem("allMovies", JSON.stringify(moviesList));
+        setAllMovies(moviesList);
+        localStorage.setItem(
+          "filterMovies",
+          JSON.stringify(moviesList.filter((movie) => movie.duration <= 40))
+        );
+        setFilterMovies(moviesList.filter((movie) => movie.duration <= 40));
+        setPreloaderActive(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const fitersMovies = (movies, value) => {
+    return movies.filter((movie) => {
+      if (value.length > 0) {
+        return movie.nameRU.toLowerCase().includes(value.toLowerCase());
+      }
+    });
+  };
+
+  const getSaveMovies = (data) => {
+    mainApi
+      .getSaveMovies()
+      .then((movies) => {
+        const moviesList = movies.data.filter((movie) => movie.owner === data);
+
+        localStorage.setItem("saveMovies", JSON.stringify(moviesList));
+        setAllSaveMovies(moviesList);
+
+        localStorage.setItem(
+          "filterSaveMovies",
+          JSON.stringify(moviesList.filter((movie) => movie.duration <= 40))
+        );
+        setFilterSaveMovies(moviesList.filter((movie) => movie.duration <= 40));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const searchSaveMovies = (value) => {
+    setPreloaderActive(true);
+    const moviesList = JSON.parse(localStorage.getItem("saveMovies"));
+    const filterMoviesList = fiterSaveMovies(moviesList, value);
+    setAllSaveMovies(filterMoviesList);
+    setFilterSaveMovies(
+      filterMoviesList.filter((movie) => movie.duration <= 40)
+    );
+    setPreloaderActive(false);
+  };
+
+  const fiterSaveMovies = (movies, value) => {
+    return movies.filter((movie) =>
+      movie.nameRU.toLowerCase().includes(value.toLowerCase())
+    );
+  };
 
   const handleRegister = (name, email, password) => {
     register(name, email, password)
       .then((data) => {
         console.log(data);
-        //setUserData({ name: data.name, email: data.email });
         navigate("/signin");
       })
       .catch((err) => {
@@ -80,6 +172,10 @@ function App() {
       name: "",
       email: "",
     });
+    localStorage.removeItem("filterMovies");
+    localStorage.removeItem("allMovies");
+    setAllMovies([]);
+    setFilterMovies([]);
     setLoggedIn(false);
   };
 
@@ -94,8 +190,73 @@ function App() {
       });
   };
 
-  const filter = (data) => {
-    const fil = {
+  const handleMovieLike = (movie) => {
+    const isLiked = saveMovies.some(
+      (i) => i.movieId === movie.id || i.movieId === movie.movieId
+    );
+    if (!isLiked) {
+      addMovies(movie);
+    } else {
+      deleteMovie(movie);
+    }
+  };
+
+  const addMovies = (data) => {
+    mainApi
+      .saveMovies(movieDataСonversion(data))
+      .then((newMovie) => {
+        setAllSaveMovies([newMovie.data, ...allSaveMovies]);
+        localStorage.setItem(
+          "saveMovies",
+          JSON.stringify([newMovie.data, ...allSaveMovies])
+        );
+        if (newMovie.data.duration < 40) {
+          localStorage.setItem(
+            "filterSaveMovies",
+            JSON.stringify([newMovie.data, ...filterSaveMovies])
+          );
+          setFilterSaveMovies([newMovie.data, ...filterSaveMovies]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const deleteMovie = (data) => {
+    const d = allSaveMovies.filter((movie) => {
+      if (movie.movieId === data.id || movie.movieId === data.movieId) {
+        return movie;
+      }
+    });
+
+    mainApi
+      .deleteMovie(d[0]._id)
+      .then(() => {
+        localStorage.getItem(
+          "filterSaveMovies",
+          setFilterSaveMovies((state) =>
+            state.filter((c) => c.movieId !== data.movieId)
+          )
+        );
+        setFilterSaveMovies((state) =>
+          state.filter((c) => c.movieId !== data.id)
+        );
+        setAllSaveMovies((state) => state.filter((c) => c.movieId !== data.id));
+        localStorage.getItem(
+          "saveMovies",
+          setAllSaveMovies((state) =>
+            state.filter((c) => c.movieId !== data.movieId)
+          )
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const movieDataСonversion = (data) => {
+    const movieData = {
       country: data.country,
       director: data.director,
       duration: data.duration,
@@ -107,22 +268,12 @@ function App() {
       movieId: data.id,
       nameRU: data.nameRU,
       nameEN: data.nameEN,
-    }
-    return fil;
-  }
-
-  const addMovies = (data) => {
-    const a = filter(data)
-    mainApi.saveMovies(a).then((newMovie) => {
-      setSaveMovies([newMovie, ...saveMovies])
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
+    };
+    return movieData;
+  };
 
   const tokenCheck = () => {
     const token = localStorage.getItem("token");
-    console.log()
     if (token) {
       getContent(token)
         .then((res) => {
@@ -160,7 +311,16 @@ function App() {
                     themeColor="header__white heder__burger"
                     loggedIn={loggedIn}
                   />
-                  <Movies movies={movies} addMovies={addMovies} />
+                  <Movies
+                    searchAllMovies={searchAllMovies}
+                    movies={movies}
+                    onMovieLike={handleMovieLike}
+                    loggedIn={loggedIn}
+                    saveMovies={saveMovies}
+                    checkbox={checkbox}
+                    setCheckbox={setCheckbox}
+                    preloaderActive={preloaderActive}
+                  />
                   <Footer />
                 </>
               }
@@ -171,7 +331,14 @@ function App() {
               element={
                 <>
                   <Header themeColor="header__white" loggedIn={loggedIn} />
-                  <SavedMovies saveMovies={saveMovies} />
+                  <SavedMovies
+                    saveMovies={saveMovies}
+                    onMovieLike={handleMovieLike}
+                    searchSaveMovies={searchSaveMovies}
+                    checkbox={checkbox}
+                    setCheckbox={setCheckbox}
+                    preloaderActive={preloaderActive}
+                  />
                   <Footer />
                 </>
               }

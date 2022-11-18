@@ -38,11 +38,24 @@ class MainApi {
     }).then(this._checkResponse);
   }
 
+  getSaveMovies() {
+    return fetch(`${this._url}/movies`, {
+      method: "GET",
+      headers: this._headers,
+    }).then(this._checkResponse);
+  }
+
+  deleteMovie(id) {
+    return fetch(`${this._url}/movies/${id}`, {
+      method: "DELETE",
+      headers: this._headers,
+    }).then(this._checkResponse);
+  }
 }
 
 const mainApi = new MainApi({
-  //url: "http://api.movies.fomindmitriy.nomoredomains.icu",
-  url: "http://localhost:3000",
+  url: "https://api.movies.fomindmitriy.nomoredomains.icu",
+  //url: "http://localhost:3000",
   headers: {
     authorization: `Bearer ${localStorage.getItem("token")}`,
     "Content-Type": "application/json",

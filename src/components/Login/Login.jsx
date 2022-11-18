@@ -2,28 +2,18 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Login.css";
 import logo from "../../images/logo.svg";
+import useInput from "../../hooks/useInput";
 
 function Login({ handleLogin }) {
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData((oldData) => ({
-      ...oldData,
-      [name]: value,
-    }));
-  };
+  const email = useInput("", { isEmpty: true, minLength: 3, isEmail: true });
+  const password = useInput("", { isEmpty: true, minLength: 3 });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { email, password } = data;
-    if (!email || !password) {
+    if (!email.value || !password.value) {
       return;
     }
-    handleLogin(email, password);
+    handleLogin(email.value, password.value);
   };
 
   return (
@@ -39,23 +29,42 @@ function Login({ handleLogin }) {
           id="email"
           name="email"
           type="email"
-          value={data.email}
-          onChange={handleChange}
+          value={email.value}
+          onChange={(e) => email.onChange(e)}
+          onBlur={(e) => email.onBlur(e)}
           required
         />
-        <span className="register__input-error" />
+        {email.isDirty && email.isEmpty && (
+          <div className="register__input-err">Поле не может быть пустым.</div>
+        )}
+        {email.isDirty && email.minLengthError && (
+          <div className="register__input-err">Некорректная длина.</div>
+        )}
+        {email.isDirty && email.emailError && (
+          <div className="register__input-err">Должен быть email.</div>
+        )}
         <label className="register__label">Пароль</label>
         <input
           className="register__input"
           id="password"
           name="password"
           type="password"
-          value={data.password}
-          onChange={handleChange}
+          value={password.value}
+          onChange={(e) => password.onChange(e)}
+          onBlur={(e) => password.onBlur(e)}
           required
         />
-        <span className="register__input-error" />
-        <button className="register__button register__button_login" aria-label="войти">
+        {password.isDirty && password.isEmpty && (
+          <div className="register__input-err">Поле не может быть пустым.</div>
+        )}
+        {password.isDirty && password.minLengthError && (
+          <div className="register__input-err">Некорректная длина.</div>
+        )}
+        <button
+          className="register__button register__button_login"
+          disabled={!email.inputValid || !password.inputValid}
+          aria-label="войти"
+        >
           Войти
         </button>
         <div className="register__singin">
