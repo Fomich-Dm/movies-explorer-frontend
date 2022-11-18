@@ -1,5 +1,7 @@
 # Movies-explorer-frontend
 
+## Ссылка на пул реквест: https://github.com/Fomich-Dm/movies-explorer-frontend/pull/2
+
 ## Описание:
 
 Movies explorer frontend — это фронтенд часть SPA проекта, состоящего из 2 частей.
