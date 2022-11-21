@@ -16,6 +16,8 @@ import mainApi from "../../utils/MainApi";
 import moviesApi from "../../utils/MoviesApi";
 import { register, authorize, getContent } from "../../utils/Auth";
 import { useLocation } from "react-router-dom";
+import UnprotectedRoute from "../UnpotectedRoute/UnprotectedRoute";
+import { DURATION_MOVIES } from "../../utils/constant";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -23,6 +25,10 @@ function App() {
 
   const [movies, setMovies] = useState([]);
   const [saveMovies, setSaveMovies] = useState([]);
+
+  const [allMoviesList, setAllMoviesList] = useState(
+    JSON.parse(localStorage.getItem("allMoviesList"))
+  );
 
   const [allMovies, setAllMovies] = useState(
     JSON.parse(localStorage.getItem("allMovies")) ?? []
@@ -41,6 +47,9 @@ function App() {
   const [preloaderActive, setPreloaderActive] = useState(false);
   const [checkbox, setCheckbox] = useState(
     JSON.parse(localStorage.getItem("checkbox"))
+  );
+  const [searchValue, setSearchValue] = useState(
+    JSON.parse(localStorage.getItem("searchValue")) ?? ""
   );
 
   const [editInfo, setEditInfo] = useState(false);
@@ -79,28 +88,43 @@ function App() {
 
   const searchAllMovies = (value) => {
     setPreloaderActive(true);
-    moviesApi
-      .getAllMovies()
-      .then((movies) => {
-        const moviesList = fitersMovies(movies, value);
-        localStorage.setItem("allMovies", JSON.stringify(moviesList));
-        setAllMovies(moviesList);
-        localStorage.setItem(
-          "filterMovies",
-          JSON.stringify(moviesList.filter((movie) => movie.duration <= 40))
-        );
-        setFilterMovies(moviesList.filter((movie) => movie.duration <= 40));
-        setPreloaderActive(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+
+    if (allMoviesList === null) {
+      moviesApi
+        .getAllMovies()
+        .then((movies) => {
+          localStorage.setItem("allMoviesList", JSON.stringify(movies));
+          setAllMoviesList(movies);
+          const moviesList = fitersMovies(movies, value);
+          searchMovies(moviesList, value);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      const moviesList = fitersMovies(allMoviesList, value);
+      searchMovies(moviesList, value);
+    }
+  };
+
+  const searchMovies = (moviesList, value) => {
+    localStorage.setItem("searchValue", JSON.stringify(value));
+    setSearchValue(value);
+    localStorage.setItem("allMovies", JSON.stringify(moviesList));
+    setAllMovies(moviesList);
+    localStorage.setItem(
+      "filterMovies",
+      JSON.stringify(moviesList.filter((movie) => movie.duration <= DURATION_MOVIES))
+    );
+    setFilterMovies(moviesList.filter((movie) => movie.duration <= DURATION_MOVIES));
+    setPreloaderActive(false);
   };
 
   const fitersMovies = (movies, value) => {
     return movies.filter((movie) => {
       if (value.length > 0) {
         return movie.nameRU.toLowerCase().includes(value.toLowerCase());
+      } else {
       }
     });
   };
@@ -116,9 +140,9 @@ function App() {
 
         localStorage.setItem(
           "filterSaveMovies",
-          JSON.stringify(moviesList.filter((movie) => movie.duration <= 40))
+          JSON.stringify(moviesList.filter((movie) => movie.duration <= DURATION_MOVIES))
         );
-        setFilterSaveMovies(moviesList.filter((movie) => movie.duration <= 40));
+        setFilterSaveMovies(moviesList.filter((movie) => movie.duration <= DURATION_MOVIES));
       })
       .catch((err) => {
         console.log(err);
@@ -131,7 +155,7 @@ function App() {
     const filterMoviesList = fiterSaveMovies(moviesList, value);
     setAllSaveMovies(filterMoviesList);
     setFilterSaveMovies(
-      filterMoviesList.filter((movie) => movie.duration <= 40)
+      filterMoviesList.filter((movie) => movie.duration <= DURATION_MOVIES)
     );
     setPreloaderActive(false);
   };
@@ -144,9 +168,8 @@ function App() {
 
   const handleRegister = (name, email, password) => {
     register(name, email, password)
-      .then((data) => {
-        console.log(data);
-        navigate("/signin");
+      .then(() => {
+        handleLogin(email, password);
       })
       .catch((err) => {
         console.log(err);
@@ -174,6 +197,10 @@ function App() {
     });
     localStorage.removeItem("filterMovies");
     localStorage.removeItem("allMovies");
+    localStorage.removeItem("allMoviesList");
+    localStorage.removeItem("searchValue");
+    setSearchValue("");
+    setAllMoviesList(null);
     setAllMovies([]);
     setFilterMovies([]);
     setLoggedIn(false);
@@ -190,27 +217,28 @@ function App() {
       });
   };
 
-  const handleMovieLike = (movie) => {
+  const handleMovieLike = (movie, setLike) => {
     const isLiked = saveMovies.some(
       (i) => i.movieId === movie.id || i.movieId === movie.movieId
     );
     if (!isLiked) {
-      addMovies(movie);
+      addMovies(movie, setLike);
     } else {
-      deleteMovie(movie);
+      deleteMovie(movie, setLike);
     }
   };
 
-  const addMovies = (data) => {
+  const addMovies = (data, setLike) => {
     mainApi
       .saveMovies(movieDataСonversion(data))
       .then((newMovie) => {
+        setLike(true);
         setAllSaveMovies([newMovie.data, ...allSaveMovies]);
         localStorage.setItem(
           "saveMovies",
           JSON.stringify([newMovie.data, ...allSaveMovies])
         );
-        if (newMovie.data.duration < 40) {
+        if (newMovie.data.duration < DURATION_MOVIES) {
           localStorage.setItem(
             "filterSaveMovies",
             JSON.stringify([newMovie.data, ...filterSaveMovies])
@@ -223,7 +251,7 @@ function App() {
       });
   };
 
-  const deleteMovie = (data) => {
+  const deleteMovie = (data, setLike) => {
     const d = allSaveMovies.filter((movie) => {
       if (movie.movieId === data.id || movie.movieId === data.movieId) {
         return movie;
@@ -233,6 +261,7 @@ function App() {
     mainApi
       .deleteMovie(d[0]._id)
       .then(() => {
+        setLike(false);
         localStorage.getItem(
           "filterSaveMovies",
           setFilterSaveMovies((state) =>
@@ -320,6 +349,8 @@ function App() {
                     checkbox={checkbox}
                     setCheckbox={setCheckbox}
                     preloaderActive={preloaderActive}
+                    allMoviesList={allMoviesList}
+                    searchValue={searchValue}
                   />
                   <Footer />
                 </>
@@ -338,6 +369,7 @@ function App() {
                     checkbox={checkbox}
                     setCheckbox={setCheckbox}
                     preloaderActive={preloaderActive}
+                    allSaveMovies={allSaveMovies}
                   />
                   <Footer />
                 </>
@@ -360,13 +392,17 @@ function App() {
             />
           </Route>
 
-          <Route
-            path="/signup"
-            element={<Register handleRegister={handleRegister} />}
-          />
+          <Route element={<UnprotectedRoute loggedIn={loggedIn} />}>
+            <Route
+              path="/signup"
+              element={<Register handleRegister={handleRegister} />}
+            />
 
-          <Route path="/signin" element={<Login handleLogin={handleLogin} />} />
-
+            <Route
+              path="/signin"
+              element={<Login handleLogin={handleLogin} />}
+            />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

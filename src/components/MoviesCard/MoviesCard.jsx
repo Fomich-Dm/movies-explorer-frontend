@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./MoviesCard.css";
 
-function MoviesCard({ movie, onMovieLike, saveMovies }) {
+function MoviesCard({ movie, onMovieLike, saveMovies}) {
   const [like, setLike] = useState(false);
   const { pathname } = useLocation();
 
@@ -20,10 +20,9 @@ function MoviesCard({ movie, onMovieLike, saveMovies }) {
   }, [saveMovies]);
 
   const handleLikeClick = () => {
-    setLike(!like);
-    onMovieLike(movie);
+    //setLike(!like)
+    onMovieLike(movie, setLike, like);
   };
-  console.log(movie)
 
   return (
     <section className="card">

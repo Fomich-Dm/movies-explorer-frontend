@@ -12,6 +12,8 @@ function Movies({
   checkbox,
   setCheckbox,
   preloaderActive,
+  allMoviesList,
+  searchValue
 }) {
   return (
     <main>
@@ -19,6 +21,7 @@ function Movies({
         searchAllMovies={searchAllMovies}
         checkbox={checkbox}
         setCheckbox={setCheckbox}
+        searchValue={searchValue}
       />
       {preloaderActive ? (
         <Preloader />
@@ -28,6 +31,8 @@ function Movies({
           movies={movies}
           onMovieLike={onMovieLike}
           saveMovies={saveMovies}
+          allMoviesList={allMoviesList}
+          searchValue={searchValue}
         />
       )}
     </main>

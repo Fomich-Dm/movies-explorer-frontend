@@ -109,6 +109,19 @@
     cursor: auto;
 }
 
+.profile__button-back {
+    border: none;
+    margin-top: 20px;
+    background-color: #fafafa;
+    width: 100%;
+    color: #EE3465;
+}
+
+.profile__button-back:hover {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
 @media (max-width:768px) {
     .profile {
         padding: 230px 0 269px;

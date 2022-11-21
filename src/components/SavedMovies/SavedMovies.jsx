@@ -18,6 +18,7 @@ function SavedMovies({
         searchSaveMovies={searchSaveMovies}
         checkbox={checkbox}
         setCheckbox={setCheckbox}
+        searchValue={''}
       />
       {preloaderActive ? (
         <Preloader />

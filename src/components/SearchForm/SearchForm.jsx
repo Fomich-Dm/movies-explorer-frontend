@@ -9,8 +9,9 @@ function SearchForm({
   searchSaveMovies,
   checkbox,
   setCheckbox,
+  searchValue,
 }) {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(searchValue);
   const { pathname } = useLocation();
 
   useEffect(() => {});
@@ -41,6 +42,7 @@ function SearchForm({
             placeholder="Фильм"
             required
             onChange={(event) => setValue(event.target.value)}
+            value={value}
           ></input>
           <button
             className="search-form__button"

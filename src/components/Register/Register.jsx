@@ -9,8 +9,6 @@ function Register({ handleRegister }) {
   const email = useInput("", { isEmpty: true, minLength: 3, isEmail: true });
   const password = useInput("", { isEmpty: true, minLength: 3 });
 
-  console.log(name.inputValid);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     handleRegister(name.value, email.value, password.value);

@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
+import { useEffect } from "react";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import useInput from "../../hooks/useInput";
+import PopupSaveProfile from "../PopupSaveProfile/PopupSaveProfile";
 import "./Profile.css";
 
 function Profile({ handleLogout, handleUpdateUser, editInfo, setEditInfo }) {
@@ -11,6 +13,17 @@ function Profile({ handleLogout, handleUpdateUser, editInfo, setEditInfo }) {
     isEmpty: true,
     minLength: 3,
     isEmail: true,
+  });
+
+  const [dataProfile, setDataProfile] = useState(false);
+  const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
+
+  useEffect(() => {
+    if (currentUser.name !== name.value || currentUser.email !== email.value) {
+      setDataProfile(true);
+    } else {
+      setDataProfile(false);
+    }
   });
 
   const handleClickEdit = () => {
@@ -25,7 +38,16 @@ function Profile({ handleLogout, handleUpdateUser, editInfo, setEditInfo }) {
     handleClickEdit();
   };
 
+  const handleSaveClick = () => [
+    setInfoTooltipOpen(true)
+  ]
+
+  function closePopup() {
+    setInfoTooltipOpen(false)
+  }
+
   return (
+    <>
     <form className="profile" onSubmit={handleSubmit}>
       <h2 className="profile__title">Привет, {currentUser.name}!</h2>
       <div className="profile__content">
@@ -78,11 +100,13 @@ function Profile({ handleLogout, handleUpdateUser, editInfo, setEditInfo }) {
         <>
           <button
             className="profile__button-save"
-            disabled={!name.inputValid || !email.inputValid}
+            onClick={handleSaveClick}
+            disabled={!name.inputValid || !email.inputValid || !dataProfile}
             aria-label="Сохранить"
           >
             Сохранить
           </button>
+          <button className="profile__button-back">Назад</button>
         </>
       ) : (
         <>
@@ -97,6 +121,8 @@ function Profile({ handleLogout, handleUpdateUser, editInfo, setEditInfo }) {
         </>
       )}
     </form>
+    <PopupSaveProfile isOpen={isInfoTooltipOpen} onClose={closePopup}/>
+    </>
   );
 }
 
