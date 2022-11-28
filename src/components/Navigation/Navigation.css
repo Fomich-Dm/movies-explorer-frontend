@@ -23,10 +23,16 @@
 }
 
 @media (max-width:768px) {
+    
+    .navigation__none {
+        display: none;
+    }
+
     .navigation {
         margin: 0 auto;
         padding: 159px 0;
     }
+
 
     .navigation__links {
         display: flex;

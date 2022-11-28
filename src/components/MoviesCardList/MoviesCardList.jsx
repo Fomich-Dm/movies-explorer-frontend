@@ -1,39 +1,112 @@
 import React from "react";
 import "./MoviesCardList.css";
 import MoviesCard from "../MoviesCard/MoviesCard";
-import q from "../../images/пробные картинки/1.png";
-import w from "../../images/пробные картинки/2.png";
-import e from "../../images/пробные картинки/3.png";
-import r from "../../images/пробные картинки/4.png";
-import t from "../../images/пробные картинки/5.png";
-import y from "../../images/пробные картинки/6.png";
-import u from "../../images/пробные картинки/7.png";
-import i from "../../images/пробные картинки/8.png";
-import o from "../../images/пробные картинки/9.png";
-import p from "../../images/пробные картинки/10.png";
-import a from "../../images/пробные картинки/11.png";
-import s from "../../images/пробные картинки/12.png";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import {
+  ADD_MOVIES_EXTRO_LARGE_SIZE,
+  ADD_MOVIES_LARGE_SIZE,
+  ADD_MOVIES_MEDIUM_SIZE,
+  ADD_MOVIES_SMALL_SIZE,
+  DISPLAY_MOVIES_LARGE_SIZE,
+  DISPLAY_MOVIES_MEDIUM_SIZE,
+  DISPLAY_MOVIES_SMALL_SIZE,
+  EXTRO_LARGE_SIZE,
+  LARGE_SIZE,
+  MEDIUM_SIZE,
+} from "../../utils/constant";
 
-function MoviesCardList() {
+function MoviesCardList({
+  movies,
+  onMovieLike,
+  saveMovies,
+  allMoviesList,
+  searchValue,
+}) {
+  const { pathname } = useLocation();
+  const [width, setWidth] = useState(0);
+  const [numberOfFilms, setNumberOfFilms] = useState(0);
+  const slice = movies.slice(0, numberOfFilms);
+
+  function screenWidthChange() {
+    setTimeout(() => {  
+      setWidth(window.innerWidth);
+    }, 1000);
+  }
+
+  const handleLoadMore = () => {
+    if (width >= EXTRO_LARGE_SIZE) {
+      setNumberOfFilms(numberOfFilms + ADD_MOVIES_EXTRO_LARGE_SIZE);
+    } else if (width >= LARGE_SIZE) {
+      setNumberOfFilms(numberOfFilms + ADD_MOVIES_LARGE_SIZE);
+    } else if (width >= MEDIUM_SIZE) {
+      setNumberOfFilms(numberOfFilms + ADD_MOVIES_MEDIUM_SIZE);
+    } else {
+      setNumberOfFilms(numberOfFilms + ADD_MOVIES_SMALL_SIZE);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", screenWidthChange);
+    setWidth(window.innerWidth);
+    if (width >= LARGE_SIZE) {
+      setNumberOfFilms(DISPLAY_MOVIES_LARGE_SIZE);
+    } else if (width >= MEDIUM_SIZE) {
+      setNumberOfFilms(DISPLAY_MOVIES_MEDIUM_SIZE);
+    } else {
+      setNumberOfFilms(DISPLAY_MOVIES_SMALL_SIZE);
+    }
+    return () => {
+      window.removeEventListener("resize", screenWidthChange);
+    };
+  }, [width]);
+
   return (
     <section className="cards">
-      <div className="cards__container">
-        <MoviesCard img={q} />
-        <MoviesCard img={w} />
-        <MoviesCard img={e} />
-        <MoviesCard img={r} />
-        <MoviesCard img={t} />
-        <MoviesCard img={y} />
-        <MoviesCard img={u} />
-        <MoviesCard img={i} />
-        <MoviesCard img={o} />
-        <MoviesCard img={p} />
-        <MoviesCard img={a} />
-        <MoviesCard img={s} />
-      </div>
-      <button className="cards__button" type="button">
-        Еще
-      </button>
+      {(
+        pathname === "/movies"
+          ? allMoviesList === null
+          : JSON.parse(localStorage.getItem("saveMovies")).length === 0
+      ) ? (
+        pathname === "/movies" ? (
+          <div></div>
+        ) : (
+          <p className="cards__nothing-found">Нет сохранненых фильмов</p>
+        )
+      ) : (
+        <div className="cards__container">
+          {movies.length === 0 ? (
+            searchValue === "" ? (
+              <p className="cards__nothing-found">
+                Нужно ввести ключевое слово
+              </p>
+            ) : (
+              <p className="cards__nothing-found">Ничего не найдено</p>
+            )
+          ) : (
+            slice.map((movie) => {
+              return (
+                <MoviesCard
+                  key={pathname === "/movies" ? movie.id : movie.movieId}
+                  movie={movie}
+                  onMovieLike={onMovieLike}
+                  saveMovies={saveMovies}
+                />
+              );
+            })
+          )}
+        </div>
+      )}
+      {numberOfFilms >= movies.length ? null : (
+        <button
+          className="cards__button"
+          type="button"
+          onClick={handleLoadMore}
+        >
+          Еще
+        </button>
+      )}
     </section>
   );
 }

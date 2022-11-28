@@ -32,6 +32,14 @@
     margin: 10px 0 20px;
 }
 
+.register__input-err {
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 13px;
+    margin: 0;
+    color: red;
+}
+
 .register__button {
     margin: 69px 0 16px;
     border: none;
@@ -44,6 +52,16 @@
     text-align: center;
     color: #FFFFFF;
 }
+
+.register__button:disabled {
+    opacity: 0.7;
+    cursor: none;
+}
+
+.register__button:disabled:hover {
+    cursor: auto;
+}
+
 
 .register__button:hover {
     cursor: pointer;

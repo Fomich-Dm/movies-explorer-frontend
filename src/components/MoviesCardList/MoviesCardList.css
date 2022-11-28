@@ -9,6 +9,14 @@
     margin: 0 auto;
 }
 
+.cards__nothing-found {
+    text-align: center;
+    margin: 0;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 20px;
+}
+
 .cards__button {
     width: 100%;
     margin-top: 80px;

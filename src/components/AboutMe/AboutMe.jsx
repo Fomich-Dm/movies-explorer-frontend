@@ -10,14 +10,13 @@ function AboutMe() {
         <div className="about-me__info">
           <h2 className="about-me__name">Дмитрий</h2>
           <h3 className="about-me__job">Фронтенд-разработчик, 27 лет</h3>
-          <p className="about-me__description">
-            Я родился и живу в Саратове, закончил факультет экономики СГУ. У
-            меня есть жена и дочь. Я люблю слушать музыку, а ещё увлекаюсь
-            бегом. Недавно начал кодить. С 2015 года работал в компании «СКБ
-            Контур». После того, как прошёл курс по веб-разработке, начал
-            заниматься фриланс-заказами и ушёл с постоянной работы.
-          </p>
-          <a className="about-me__link" href="https://github.com/Fomich-Dm">
+          <p className="about-me__description"></p>
+          <a
+            className="about-me__link"
+            href="https://github.com/Fomich-Dm"
+            target="_blank"
+            rel="noreferrer"
+          >
             Github
           </a>
         </div>

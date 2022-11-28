@@ -43,6 +43,16 @@
     font-size: 11px;
     line-height: 13px;
     margin: 0;
+    text-align: right;
+}
+
+.profile__meaning-err {
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 13px;
+    margin: 0;
+    text-align: end;
+    color: red;
 }
 
 .profile__button-edit {
@@ -72,6 +82,44 @@
 .profile__button-exit:hover {
     opacity: 0.7;
     cursor: pointer;
+}
+
+.profile__button-save {
+    background-color: #3456F3;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 0;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    color: #fafafa;
+}
+
+.profile__button-save:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.profile__button-save:disabled {
+    opacity: 0.7;
+    cursor: none;
+}
+
+.profile__button-save:disabled:hover {
+    cursor: auto;
+}
+
+.profile__button-back {
+    border: none;
+    margin-top: 20px;
+    background-color: #fafafa;
+    width: 100%;
+    color: #EE3465;
+}
+
+.profile__button-back:hover {
+    cursor: pointer;
+    opacity: 0.7;
 }
 
 @media (max-width:768px) {

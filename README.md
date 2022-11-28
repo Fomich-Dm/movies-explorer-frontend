@@ -1,4 +1,7 @@
-# Movies-explorer-frontend(В разработке)
+
+# Movies-explorer-frontend
+
+## Ссылка на пул реквест: https://github.com/Fomich-Dm/movies-explorer-frontend/pull/2
 
 ## Описание:
 
@@ -6,7 +9,9 @@ Movies explorer frontend — это фронтенд часть SPA проект
 Первая — это портфолио лендинг разработчика.
 Вторая — это сервис для поиска фильмов по ключевым словам и продолжительности с возможностью добавления в избранное.
 
-Адрес фронтенд проекта: В разработке
+
+Адрес фронтенд проекта: https://movies.fomindmitriy.nomoredomains.icu/
+
 
 Ссылка на макет: https://disk.yandex.ru/d/FuwDNPCpaKeJXg
 
